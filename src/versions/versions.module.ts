@@ -11,6 +11,7 @@ import { ServicesModule } from 'src/services/services.module'
     TypeOrmModule.forFeature([Version, Service])
   ],
   controllers: [VersionsController],
-  providers: [VersionsService]
+  providers: [VersionsService],
+  exports: [VersionsService]
 })
 export class VersionsModule { }

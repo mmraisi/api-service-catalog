@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Version } from './entities/version.entity'
 import { FindManyOptions, Repository } from 'typeorm'
 import { CreateVersionDto } from './dto/create-version.dto'
-import { Service } from 'src/services/entities/service.entity'
 import { UpdateVersionDto } from './dto/update-version.dto'
 import { QueryVersionDto } from './dto/query-version.dto'
+import { Service } from 'src/services/entities/service.entity'
 
 @Injectable()
 export class VersionsService {
