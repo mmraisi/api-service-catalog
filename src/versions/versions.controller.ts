@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, HttpCode } from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, Patch, Delete, HttpCode, Query } from '@nestjs/common'
 import { VersionsService } from './versions.service'
 import { CreateVersionDto } from './dto/create-version.dto'
 import { UpdateVersionDto } from './dto/update-version.dto'
+import { QueryVersionDto } from './dto/query-version.dto'
 
 @Controller('services/:serviceId/versions')
 export class VersionsController {
@@ -16,8 +17,8 @@ export class VersionsController {
   }
 
   @Get()
-  async findAll (@Param('serviceId') serviceId: string) {
-    return await this.versionsService.findAll(serviceId)
+  async findAll (@Param('serviceId') serviceId: string, @Query() query: QueryVersionDto) {
+    return await this.versionsService.findAll(serviceId, query)
   }
 
   @Get(':versionId')

@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ServicesService } from './services.service'
 import { CreateServiceDto } from './dto/create-service.dto'
 import { Service } from './entities/service.entity'
 import { UpdateServiceDto } from './dto/update-service.dto'
 import { ApiBearerAuth } from '@nestjs/swagger'
 import { AuthGuard } from '@nestjs/passport'
+import { QueryServiceDto } from './dto/query-service.dto'
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('bearer'))
@@ -18,8 +19,8 @@ export class ServicesController {
   }
 
   @Get()
-  async findAll () {
-    return await this.servicesService.findAll()
+  async findAll (@Query() query: QueryServiceDto): Promise<Service[]> {
+    return await this.servicesService.findAll(query)
   }
 
   @Get(':serviceId')
