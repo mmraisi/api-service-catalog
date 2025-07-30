@@ -1,10 +1,11 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Version } from './entities/version.entity'
-import { Repository } from 'typeorm'
+import { FindManyOptions, Repository } from 'typeorm'
 import { CreateVersionDto } from './dto/create-version.dto'
 import { Service } from 'src/services/entities/service.entity'
 import { UpdateVersionDto } from './dto/update-version.dto'
+import { QueryVersionDto } from './dto/query-version.dto'
 
 @Injectable()
 export class VersionsService {
@@ -37,11 +38,23 @@ export class VersionsService {
     return await this.versionRepository.save(version)
   }
 
-  async findAll (serviceId: string): Promise<Version[]> {
-    return await this.versionRepository.find({
+  async findAll (serviceId: string, query: QueryVersionDto): Promise<Version[]> {
+    const { limit = 10, version_name: versionName } = query
+
+    const offset = query.offset
+
+    const options: FindManyOptions<Version> = {
       where: { service: { service_id: serviceId } },
-      relations: ['service']
-    })
+      relations: ['service'],
+      order: { date_created: 'DESC' },
+      take: limit,
+      skip: offset
+    }
+    if (versionName) {
+      options.where = { ...options.where, version_name: versionName }
+    }
+
+    return await this.versionRepository.find(options)
   }
 
   async findOne (serviceId: string, versionId: string): Promise<Version> {

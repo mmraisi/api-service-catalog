@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, HttpCode, UseGuards } from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, Patch, Delete, HttpCode, Query, UseGuards } from '@nestjs/common'
 import { VersionsService } from './versions.service'
 import { CreateVersionDto } from './dto/create-version.dto'
 import { UpdateVersionDto } from './dto/update-version.dto'
+import { QueryVersionDto } from './dto/query-version.dto'
 import { ApiBearerAuth } from '@nestjs/swagger'
 import { BearerAuthGuard } from 'src/auth/auth.guard'
 
@@ -9,32 +10,32 @@ import { BearerAuthGuard } from 'src/auth/auth.guard'
 @UseGuards(BearerAuthGuard)
 @Controller('services/:serviceId/versions')
 export class VersionsController {
-  constructor (private readonly versionsService: VersionsService) { }
+  constructor(private readonly versionsService: VersionsService) { }
 
   @Post()
-  async create (
-  @Param('serviceId') serviceId: string,
+  async create(
+    @Param('serviceId') serviceId: string,
     @Body() createVersionDto: CreateVersionDto
   ) {
     return await this.versionsService.create(serviceId, createVersionDto)
   }
 
   @Get()
-  async findAll (@Param('serviceId') serviceId: string) {
-    return await this.versionsService.findAll(serviceId)
+  async findAll(@Param('serviceId') serviceId: string, @Query() query: QueryVersionDto) {
+    return await this.versionsService.findAll(serviceId, query)
   }
 
   @Get(':versionId')
-  async findOne (
-  @Param('serviceId') serviceId: string,
+  async findOne(
+    @Param('serviceId') serviceId: string,
     @Param('versionId') versionId: string
   ) {
     return await this.versionsService.findOne(serviceId, versionId)
   }
 
   @Patch(':versionId')
-  async update (
-  @Param('serviceId') serviceId: string,
+  async update(
+    @Param('serviceId') serviceId: string,
     @Param('versionId') versionId: string,
     @Body() updateDto: UpdateVersionDto
   ) {
@@ -43,8 +44,8 @@ export class VersionsController {
 
   @Delete(':versionId')
   @HttpCode(204)
-  async remove (
-  @Param('serviceId') serviceId: string,
+  async remove(
+    @Param('serviceId') serviceId: string,
     @Param('versionId') versionId: string
   ) {
     return await this.versionsService.remove(serviceId, versionId)
