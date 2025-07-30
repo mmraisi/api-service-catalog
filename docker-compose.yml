@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: service_catalog_pg
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT}:5432"
+
+  app:
+    build: .
+    container_name: service_catalog_app
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    ports:
+      - "${PORT}:3000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    command: npm run start:dev
+
+volumes:
+  postgres_data:
