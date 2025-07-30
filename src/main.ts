@@ -17,7 +17,7 @@ async function bootstrap () {
     .setTitle('Service Catalog API')
     .setDescription('API for managing services and their versions')
     .setVersion('1.0')
-    .addBearerAuth() // adds support for "Authorize" button
+    .addBearerAuth()
     .build()
 
   const document = SwaggerModule.createDocument(app, config)

@@ -1,8 +1,12 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, HttpCode } from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, Patch, Delete, HttpCode, UseGuards } from '@nestjs/common'
 import { VersionsService } from './versions.service'
 import { CreateVersionDto } from './dto/create-version.dto'
 import { UpdateVersionDto } from './dto/update-version.dto'
+import { ApiBearerAuth } from '@nestjs/swagger'
+import { BearerAuthGuard } from 'src/auth/auth.guard'
 
+@ApiBearerAuth()
+@UseGuards(BearerAuthGuard)
 @Controller('services/:serviceId/versions')
 export class VersionsController {
   constructor (private readonly versionsService: VersionsService) { }

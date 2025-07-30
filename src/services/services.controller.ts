@@ -1,9 +1,13 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common'
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common'
 import { ServicesService } from './services.service'
 import { CreateServiceDto } from './dto/create-service.dto'
 import { Service } from './entities/service.entity'
 import { UpdateServiceDto } from './dto/update-service.dto'
+import { ApiBearerAuth } from '@nestjs/swagger'
+import { BearerAuthGuard } from 'src/auth/auth.guard'
 
+@ApiBearerAuth()
+@UseGuards(BearerAuthGuard)
 @Controller('services')
 export class ServicesController {
   constructor (private readonly servicesService: ServicesService) { }
