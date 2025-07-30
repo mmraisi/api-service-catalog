@@ -10,6 +10,7 @@
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
     "test": "jest",
+    "test:coverage": "jest --coverage --verbose",
     "test:watch": "jest --watch"
   },
   "dependencies": {
@@ -54,9 +55,12 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.service.ts"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/$1"
+    }
   }
 }
