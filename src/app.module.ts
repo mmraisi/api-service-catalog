@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Service } from './services/entities/service.entity'
 import { Version } from './versions/entities/version.entity'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { Version } from './versions/entities/version.entity'
       })
     }),
     ServicesModule,
-    VersionsModule
+    VersionsModule,
+    AuthModule
   ]
 })
 export class AppModule { }
