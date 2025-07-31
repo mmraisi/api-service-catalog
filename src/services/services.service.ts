@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Service } from './entities/service.entity'
-import { FindManyOptions, ILike, Repository } from 'typeorm'
+import { FindManyOptions, FindOptionsOrder, ILike, Repository } from 'typeorm'
 import { CreateServiceDto } from './dto/create-service.dto'
 import { UpdateServiceDto } from './dto/update-service.dto'
 import { QueryServiceDto } from './dto/query-service.dto'
@@ -26,13 +26,17 @@ export class ServicesService {
   }
 
   async findAll (query: QueryServiceDto): Promise<Service[]> {
-    const { limit = 10, service_name: serviceName } = query
+    const { limit = 10, service_name: serviceName, sort_field: sortField, sort_direction: sortDirection } = query
     const offset = query.offset
+
+    const order: FindOptionsOrder<Service> = sortField
+      ? { [sortField]: sortDirection || 'ASC' }
+      : { date_created: 'DESC' } // default sort
 
     const options: FindManyOptions<Service> = {
       relations: ['versions'],
       where: {},
-      order: { date_created: 'DESC' },
+      order,
       take: limit,
       skip: offset
     }
