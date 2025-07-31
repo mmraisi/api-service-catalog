@@ -6,20 +6,40 @@ COMPOSE=docker compose --env-file $(ENV_FILE)
 DB_SERVICE=postgres
 APP_SERVICE=app
 
-# Start only the database
-db:
-	$(COMPOSE) up -d $(DB_SERVICE)
+
+db: ## Start only the database
+	@$(COMPOSE) up -d $(DB_SERVICE)
 
 
-# Stop and remove both app and db containers
-stop:
-	$(COMPOSE) stop $(DB_SERVICE) $(APP_SERVICE)
-	$(COMPOSE) rm -f $(DB_SERVICE) $(APP_SERVICE)
+install: ## install all dependencies
+	@npm install
 
-# Run Docker Compose (app + db) together with build
-start:
-	$(COMPOSE) up --build
+start: # Run Docker Compose (app + db) together with build
+	@$(COMPOSE) up --build
 
-# Clean volumes and all services
-clean:
-	$(COMPOSE) down -v --remove-orphans
+
+stop: ## stop & remove all running containers
+	@$(COMPOSE) down -v --remove-orphans
+
+
+clean: stop ## remove running containers, volumes, node_modules, test artifacts
+	@$(COMPOSE) rm --force -v
+	@rm -rf node_modules coverage dist
+
+
+test-unit: ## Run unit tests
+	@$(COMPOSE) run --rm $(APP_SERVICE) npm run test:coverage
+
+
+test-e2e: db ## Run e2e (integration) tests
+	@$(COMPOSE) run --rm $(APP_SERVICE) npm run test:e2e
+
+test-ci: db ## Run all tests (unit + e2e)
+	@$(COMPOSE) run --rm $(APP_SERVICE) npm run test:ci
+
+
+help: ## display this help
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
+.DEFAULT_GOAL := help
+.PHONY: build test help
